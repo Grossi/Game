@@ -1,0 +1,73 @@
+-- SERVER MODULE --
+local socket = require('socket')
+
+local servidor = {}
+
+servidor.connect = function(self)
+    self.client = socket.connect("0.0.0.0", "36789")
+    if (self.client ~= nil) then
+        self.run = coroutine.create(self.runclient)
+        return tonumber( self.client:receive() )
+    else
+        return false
+    end
+end
+
+servidor.bind = function(self)
+    self.socket = socket.bind("*", '36789')
+    self.run = coroutine.create(self.runserver)
+    return self.socket
+end
+
+servidor.runclient = function(self)
+    --run client routine
+    while true do
+        self.client:settimeout(0.01)
+        local lineIn, err = self.client:receive('*l')
+        local lineOut
+        if not err then
+            -- Se recebe algo, retorna isso
+            lineOut = coroutine.yield(lineIn)
+        else
+            lineOut = coroutine.yield() -- Se não recebe nada, apenas retorna
+        end
+        if (lineOut ~= nil) then -- Se recebeu algo do Yield, envia ao servidor
+            client:send(line .. '\n')
+        end
+    end
+end
+
+servidor.runserver = function(self)
+    --run server routine
+    while true do
+        self.socket:settimeout(0.01)
+        
+        local err
+        self.clients[#self.clients + 1], err = self.socket:accept()    --Ve se mais um client se connecta
+        
+        if not err then
+            self:send(#self.clients + 1 .. '\n')                             --Se connectar, manda o ID
+        end
+        local line = {}
+        for i, v in pairs(self.clients) do
+            local err
+            line[i], err = v:receive('*l') -- Le a primeira string (e unico, representando a scoi do cliente)
+            if not err then
+                v:send(coroutine.yield(i, line)) -- Se conseguiu ler, manda o scoi do servidor
+            else print('error in ' .. i ..' : ' .. err) end -- Se não, erro... (Teoricamente le a cada for?)
+        end
+        -- Após isso manda para cada cliente a scoi de todos 
+        for i, v in pairs(self.clients) do
+            for j, _ in pairs(self.clients) do
+                v:send(line[j] .. '\n')
+            end
+            v:send('false' .. '\n') -- Manda uma string especifica para avisar ao cliente que acabou
+        end
+        coroutine.yield(false) -- Retorna uma string especifica para avisar ao servidor que acabou
+    end
+end
+
+servidor.clients = {}
+
+
+return servidor
