@@ -77,75 +77,18 @@ Obj = function(...)
         tabx[((i+1)/2)] = arg[i]
         taby[((i+1)/2)] = arg[i+1]
     end
-    local tab = {vx = tabx,
-                vy = taby,
-                draw = function(self, stage)
-                    local t = {}
-                    for i = 1, #self.vx do
-                        t[(i*2)-1] = self.vx[i] + stage.x
-                        t[i*2] = self.vy[i] + stage.y
-                    end
-                    love.graphics.polygon('line', t)
-                end
+    local tab = {
+        vx = tabx,
+        vy = taby,
+        draw = function(self, stage)
+            local t = {}
+            for i = 1, #self.vx do
+                t[(i*2)-1] = self.vx[i] + stage.x
+                t[i*2] = self.vy[i] + stage.y
+            end
+            love.graphics.polygon('line', t)
+        end
     }
-    return tab
-end
-
------------------------- CHARACTER ---------------------------
-
-Character = function (x, y, w, h, ...)
-    local tab = Obj(x, y+h, x+w, y+h, x+w, y, x, y)
-    tab.face = 1
-    -- DO NOT change the value of x, y, w, h. They are just for easy calculations, use the functions to move the character (character.move)
-    tab.x = x
-    tab.y = y
-    tab.w = w
-    tab.h = h
-    tab.velx = 0
-    tab.vely = 0
-    tab.spd = 300 
-    tab.onGround = true
-    tab.jump = function(self)
-        if(self.onGround or true)then
-            self.vely = self.spd*-2
-            self.onGround = false
-        end
-    end
-    tab.moveRight = function(self)
-        self.velx = self.spd
-    end
-    tab.moveLeft = function(self)
-        self.velx = self.spd * -1
-    end
-    tab.stop = function(self, dt)
-        if (self.onGround) then
-            self.velx = 0
-        end
-    end
-    tab.move = function(self, stage, mx, my)
-        if(self == stage.character[1]) then
-            stage.x = stage.x - mx
-            stage.y = stage.y - my
-        end
-        self.x = self.x + mx
-        self.y = self.y + my
-        for i = 1, #self.vx do
-            self.vx[i] = self.vx[i] + mx
-            self.vy[i] = self.vy[i] + my
-        end
-    end
-    
-    --Spells
-    tab.spells = {}
-    local keyTab = {"ml", "mr"} -- MouseLeft, MouseRight
-    local size = ((#keyTab<=#arg and #keyTab) or #arg)
-    for i = 1, size do
-        tab.spells[keyTab[i]] = Spell(arg[i])
-    end
-    
-    --Buffs
-    tab.buffs = {}
-    
     return tab
 end
 

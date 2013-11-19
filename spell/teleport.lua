@@ -9,8 +9,8 @@ local foo = function(self, character, stage, dt, mousex, mousey)
             stage.effects['teleport'] = nil
             self.cooldown = 2
         else
-            local unix, uniy = mousex - character.x - character.w/2, mousey - character.y - character.h/2
-            stage.effects['teleport'] = Effect(nil, 1, 'circle', character.x+character.w+5, character.y+character.h/2, unix * 5, uniy * 5, 5)
+            local unix, uniy = mousex - character.x, mousey - character.y
+            stage.effects['teleport'] = Effect(nil, 1, 'circle', character.x+5, character.y, unix * 5, uniy * 5, 5)
         end
         self.cooldown = 0.3
     end
