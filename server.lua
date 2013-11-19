@@ -46,8 +46,8 @@ end
 
 servidor.runserver = function(self)
     --run server routine
-    local lineOut, serverScoi
-    local stage, stageOut
+    local lineOut
+    local coisas = {}
     while true do
         local lineIn = {}
         self.socket:settimeout(0.01)
@@ -56,38 +56,23 @@ servidor.runserver = function(self)
         if not err then
             self.socket:settimeout(0.06)
             -- Se connecta, yield com um valor especifico para a main passar a posição de todos os characters, e criar um novo para o novo character
-            _, serverScoi, stage = coroutine.yield('n', (#self.clients + 1))
-            stageOut = 'C::'
-            for i, v in pairs(stage.character) do
-                stageOut = stageOut .. i .. ',' .. v.x .. ',' .. v.y .. ',' .. v:w .. ',' .. v:h .. ','
-                for k, j in pairs(v.spells) do
-                    stageOut = stageOut .. k .. ',' .. j.name .. ','
-                end
-                stageOut = stageOut .. ';'
-            end
-            stageOut = stageOut .. 'E::'
-            for i, v in pairs(stage.effect) do
-                
-            self.clients[#self.clients]:send(#self.clients + 1 .. '\n')                             --Se connectar, manda o ID...
-            -- Manda a posição de todos os personagens, todos os eventos da tela
+            _, lineOut, coisas = coroutine.yield('n', (#self.clients + 1))
+            self.clients[#self.clients]:send(#self.clients + 1 .. '\n')                             --Se connectar, manda o ID... 
         end
         for i, v in pairs(self.clients) do
             self.socket:settimeout(0.01)
             lineIn[i+1] = v:receive('*l')
+            if (lineOut ~= nil) then v:send('1' .. lineOut .. '\n') end         -- Se recebeu scoi do servidor, manda para o cliente
         end
-        if scoiServer then lineOut = '1' .. scoiServer .. ';' end
         for i, v in pairs(self.clients) do
-            if (lineIn[i+1] == nil or lineIn[i+1] == '') then
-                --v:send((j+1) .. 'nil' .. '\n')
-            else
-                lineOut = lineOut .. (i+1) .. lineIn[i+1] .. ';'
+            for j in pairs(self.clients) do
+                if (lineIn[j+1] == nil or lineIn[j] == '') then
+                    v:send((j+1) .. 'nil' .. '\n')
+                else
+                    v:send((j+1) .. lineIn[j+1] .. '\n')
+                end
             end
-        end
-        for i, v in pairs(self.clients) do
-            v:send(lineOut .. '\n')
-        end                                               -- Manda para todos os clientes uma string com todas as scoi's separadas por ';'
-        
-        
+        end                                               -- Manda para todos os clientes "v" a scoi de cada cliente "j"
         _, lineOut = coroutine.yield(#self.clients, lineIn)             -- lineOut é a scoi do servidor. LineIn é uma table com as scoi's dos clients.
     end
 end

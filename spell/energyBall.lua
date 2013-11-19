@@ -4,8 +4,10 @@ local foo = function(self, character, stage, dt, mousex, mousey)
         self.cooldown = 0
     end
     if(self.cooldown == 0) then
-        character.buffs['speed'] = Buff('speed', character)
-        stage.effects['energyBall'] = Effect(nil, 'circle', character.x + character.w+5, character.y+character.h/2, mousex - character.x - character.w/2, mousey - character.y - character.h/2, 15)
+        character.velx = character.velx - ( mousex - character.x - character.w/2 )*10
+        character.vely = character.vely - ( mousey - character.y - character.h/2 )*10
+--        character.buffs['speed'] = Buff('speed', character)
+        stage.effects['energyBall'] = Effect(nil, 2,  'circle', character.x + character.w+5, character.y+character.h/2, mousex - character.x - character.w/2, mousey - character.y - character.h/2, 15)
                                -- Effect(onhit,style,   x,                   y,                 vx,              vy,            raio)
         self.cooldown = 2
     end
