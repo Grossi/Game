@@ -1,9 +1,8 @@
 require "physics"
 require "class"
 require "animation"
-require "character"
 require "scoi"
-    
+
 function love.load()
     showmx, showmy = 0, 0
     charAnim = love.graphics.newImage( 'img/charAnimation.jpg' )
@@ -11,7 +10,7 @@ function love.load()
     stg = Stage()
     stg:loadStage('teste')
     local obja = Obj( 10, 0, 20, 10, 20, 40, 10, 50, 0, 40, 0, 10 )
-    stg.character[1] = CharacterObj(obja, 350, 250, 'energyBall', 'teleport')
+    stg.character[1] = CharacterObj(obja, 350, 250, 'sword', 'teleport')
     stg.character[2] = Character(500, 500, 50, 50)
 end
 
@@ -29,11 +28,11 @@ function love.update(dt)
     for i = 1, #stg.character do
         local onGround
         local mx, my, onGround = move(stg.character[i], stg.character[i].velx * dt, stg.character[i].vely * dt, stg.objs)
+        stg.character[i].onGround = onGround
         
--- showmx and showmy are variables that are draw on the screen for testing (so it shows the last value that is not 0)
-        if (mx ~= 0 or my ~= 0) then
-            showmx, showmy = mx, my
-        end
+        showmx, showmy = mx, my
+        
+        -- Tests for collision with effects on the stage
         for j in pairs(stg.effects) do
             if(collision(stg.effects[j], stg.character[i], mx, my)) then
 --                stg.effects[i]:onHit(stg.character[i])
@@ -41,7 +40,7 @@ function love.update(dt)
         end
         stg.character[i]:move(stg, mx, my)
         if (stg.character[i].onGround == false ) then 
-            stg.character[i].vely = math.floor(my/dt)
+            stg.character[i].vely = my/dt
             stg.character[i].vely = stg.character[i].vely + stg.g
         else
             stg.character[i].vely = 0

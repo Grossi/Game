@@ -1,3 +1,7 @@
+require "character"
+require "bbox"
+
+
 ------------------------ BUFF -----------------------------
 
 Buff = function(name, character, ...) --Recebe o nome, ponteiro para o pai e os parametros do buff especifico
@@ -50,7 +54,7 @@ Effect = function(onHit, duration, style, ...)
             self.lifeTime = self.lifeTime - dt
         end
     else
-        return 'Non supported type style'
+        return 'Non supported style type'
     end
     return tab
 end
@@ -89,6 +93,7 @@ Obj = function(...)
             love.graphics.polygon('line', t)
         end
     }
+    tab.bb = Bbox(tab)
     return tab
 end
 

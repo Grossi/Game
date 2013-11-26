@@ -4,7 +4,7 @@ local x = 0
 local y = 0
 local w = 1700
 local h = 1400
-local g = 50
+local g = 10
 local background = love.graphics.newImage( 'img/bg1.jpg' )
 
 -- Table with the objects

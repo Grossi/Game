@@ -12,18 +12,6 @@ function colisaoAlpha(obja, objb, mx, my)
     -- A função ve a trajetoria [ (xa, ya) -> (xb, yb) ] para cada vertice ( os vertices estão em obj.vx e obj.vy )
     -- Ela compara essa trajetoria para cada lado do objb ( (xc, yc), (xd, yd) formam um lado do objeto )
     -- Se as retas se cruzarem, significa que houve colisão. Logo o movimento do personagem no eixo que colidiu 
-    if ( mx > 0 ) then
-        mx = mx + 0
-    end
-    if ( mx < 0 ) then
-        mx = mx - 0
-    end
-    if ( my > 0 ) then
-        my = my + 0
-    end
-    if ( my < 0 ) then
-        my = my - 0
-    end
     local onGround = false
     local nb = #objb.vx
     local na = #obja.vx
@@ -59,9 +47,9 @@ function colisaoAlpha(obja, objb, mx, my)
                         onGround = true
                         -- Chão/Teto, considerar apenas o y
                         -- error( "MESSAGE ---->> " .. yc .. "  -  " .. yd .. " ---- " .. objb.vy[1] .. " - " .. objb.vy[3] .. " my -> " .. my .. " || 4 -> " .. na )
-                        if ( math.abs(ya - yc) > math.abs(my) ) then 
-                            error(" CHAO/ TETO Por que colide? " .. xa .. "," .. ya .. ") - (" .. xb .. ", ".. yb .. ") - (" .. xc .. ", " .. yc .. ") - (" .. xd .. ", " .. yd .. ") --> mx, my -> " .. mx .. " - " .. my .. "ya, yc ->" .. ya .. " - " .. yc  )
-                        end
+--                        if ( math.abs(obja.bb.miny - objb.bb.maxy) > math.abs(my) ) then 
+--                            error(" CHAO/ TETO Por que colide? " .. xa .. "," .. ya .. ") - (" .. xb .. ", ".. yb .. ") - (" .. xc .. ", " .. yc .. ") - (" .. xd .. ", " .. yd .. ") --> mx, my -> " .. mx .. " - " .. my .. "ya, yc ->" .. ya .. " - " .. yc  )
+--                        end
                         my = yc - ya
                         if ( math.abs( my ) < 1 ) then
                             my = 0
@@ -105,8 +93,8 @@ function colisaoAlpha(obja, objb, mx, my)
         local xa, xb = objb.vx[i], objb.vx[i] - mx
         local ya, yb = objb.vy[i], objb.vy[i] - my
         for j = 1, na do
-            xa, xb = objb.vx[i], objb.vx[i] + mx
-            ya, yb = objb.vy[i], objb.vy[i] + my
+            xa, xb = objb.vx[i], objb.vx[i] - mx
+            ya, yb = objb.vy[i], objb.vy[i] - my
             local xc, xd = obja.vx[j], obja.vx[(j%nb)+1]
             local yc, yd = obja.vy[j], obja.vy[(j%nb)+1]
             local d = (xb-xa)*(yc-yd)-(yb-ya)*(xc-xd)
@@ -161,7 +149,7 @@ function collisionPolygon(obja, objb, mx, my)
         xa, xb, ya, yb = obja.vx[i], obja.vx[i] + mx, obja.vy[i], obja.vy[i] + my
         for j = 1, #objb.vx do
             xc, yc, xd, yd = objb.vx[j], objb.vy[j], objb.vx[((((j+1)%#objb.vx)>=1 and ((j+1)%#objb.vx)) or #objb.vx)], objb.vy[((((j+1)%#objb.vx)>=1 and ((j+1)%#objb.vx)) or #objb.vx)]
-            d = (xb - xa)*(yc-yd)-(yb-ya)*(xc-xd)
+            d = (xb-xa)*(yc-yd)-(yb-ya)*(xc-xd)
             dt = (xc-xa)*(yc-yd)-(yc-ya)*(xc-xd)
             dtl = (xb-xa)*(yc-ya)-(yb-ya)*(xc-xa)
             if(d ~= 0)then
