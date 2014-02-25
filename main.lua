@@ -10,8 +10,8 @@ function love.load()
     stg = Stage()
     stg:loadStage('teste')
     local obja = Obj( 10, 0, 20, 10, 20, 40, 10, 50, 0, 40, 0, 10 )
-    stg.character[1] = CharacterObj(obja, 350, 250, 'sword', 'teleport')
-    stg.character[2] = Character(500, 500, 50, 50)
+    stg.character[1] = CharacterObj(obja, 350, 250, 'dash', 'teleport')
+    stg.character[2] = Character(550, 500, 50, 50)
 end
 
 function love.update(dt)
@@ -21,6 +21,14 @@ function love.update(dt)
     local scoi = getInput(dt)
     
     readScoi(scoi, dt)
+    
+    ---- Sair do jogo se aperta ESC, para ajudar a testar ----
+    
+    if ( love.keyboard.isDown("escape") ) then
+        love.event.quit()
+    end
+    
+    
     
     ------------ LOGICA -------------
     
@@ -57,7 +65,7 @@ function love.update(dt)
     
     -- Cicla pelos Buffs, deletando os que retornarem false
     for i, v in pairs(stg.character[1].buffs) do
-        if(v:run(dt) == false)then
+        if(v:run(stg.character[1], dt, stg) == false)then
             stg.character[1].buffs[i] = nil
         end
     end

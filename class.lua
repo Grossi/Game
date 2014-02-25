@@ -10,9 +10,11 @@ Buff = function(name, character, ...) --Recebe o nome, ponteiro para o pai e os 
     tab.character = character
     local foo
     local timer
-    timer, foo  = dofile('buff/' .. name .. '.lua') -- Retorna uma função "buff.run", recebebe self(com o ponteiro para o character e os argumentos) e dt (para buffs com timers)
+    local args
+    foo, timer, args = dofile('buff/' .. name .. '.lua') -- Retorna uma função "buff.run", recebebe self(com o ponteiro para o character e os argumentos) e dt (para buffs com timers)
     tab.run = foo
     tab.timer = timer
+    tab.args = args
     return tab
 end
 
@@ -40,12 +42,13 @@ Effect = function(onHit, duration, style, ...)
         end
         tab.draw = draw
         if(onHit) then
+            tab.onHitName = onHit
             tab.onHit = function(self, character)
-                local table = {}  -- Apenas os argumentos a partir do 5 são para o "onHit", pois circle exige 5 argumentos
+                local t = {}  -- Apenas os argumentos a partir do 5 são para o "onHit", pois circle exige 5 argumentos
                 for i = 6, #self.arg do
-                    table[i - 5] = self.arg[i]
+                    t[i - 5] = self.arg[i]
                 end
-                return Buff(self.onHit, character, table)
+                return Buff(self.onHitName, character, t)
             end
         end
         tab.update = function(self, dt)
@@ -65,7 +68,8 @@ Spell = function(name)
     --Returns a table with the function "run".
     local cooldown
     local foo
-    cooldown, foo = dofile('spell/' .. name .. '.lua') --Returns a spell... function(self, character, stage, dt, mousex, mousey)
+    local delay
+    foo, cooldown, delay = dofile('spell/' .. name .. '.lua') --Returns a spell... function(self, character, stage, dt, mousex, mousey)
     local tab = {}
     tab.run = foo
     tab.cooldown = cooldown

@@ -71,6 +71,7 @@ CharacterObj = function (obj, x, y, ...)
     -- DO NOT change the value of x, y, w, h. They are just for easy calculations, use the functions to move the character (character.move)
     tab.velx = 0
     tab.vely = 0
+    tab.status = 'Normal'
     tab.spd = 300
     tab.x = tab.vx[1]
     tab.y = tab.vy[1]
@@ -95,6 +96,22 @@ CharacterObj = function (obj, x, y, ...)
         self.velx = self.velx * ( 1 - 5*dt )
     end
     tab.move = function(self, stage, mx, my)
+        if(self.status == 'Stun') then
+            return
+        end
+        if(self == stage.character[1]) then
+            stage.x = stage.x - mx
+            stage.y = stage.y - my
+        end
+        self.x = self.x + mx
+        self.y = self.y + my
+        for i = 1, #self.vx do
+            self.vx[i] = self.vx[i] + mx
+            self.vy[i] = self.vy[i] + my
+        end
+    end
+    
+    tab.dislocate = function(self, stage, mx, my)
         if(self == stage.character[1]) then
             stage.x = stage.x - mx
             stage.y = stage.y - my

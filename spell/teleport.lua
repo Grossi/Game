@@ -1,4 +1,5 @@
 local cooldown = 1
+local delay = 0
 local foo = function(self, character, stage, dt, mousex, mousey)
     if(self.cooldown < 0) then
         self.cooldown = 0
@@ -16,4 +17,4 @@ local foo = function(self, character, stage, dt, mousex, mousey)
     end
 end
 
-return cooldown, foo
+return foo, cooldown, delay
