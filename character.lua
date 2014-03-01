@@ -4,7 +4,7 @@
 Character = function (x, y, w, h, ...)
     local tab = Obj(x, y+h, x+w, y+h, x+w, y, x, y)
     tab.face = 1
-    -- DO NOT change the value of x, y, w, h. They are just for easy calculations, use the functions to move the character (character.move)
+    -- DO NOT change the value of x, y, w, h. They are just for internal calculations, use the functions to move the character (character.move)
     tab.x = x
     tab.y = y
     tab.w = w
@@ -47,7 +47,7 @@ Character = function (x, y, w, h, ...)
     
     --Spells
     tab.spells = {}
-    local keyTab = {"ml", "mr"} -- MouseLeft, MouseRight
+    local keyTab = {"ml", "mr", "kq"} -- MouseLeft, MouseRight, KeyQ
     local size = ((#keyTab<=#arg and #keyTab) or #arg)
     for i = 1, size do
         tab.spells[keyTab[i]] = Spell(arg[i])
@@ -71,6 +71,8 @@ CharacterObj = function (obj, x, y, ...)
     -- DO NOT change the value of x, y, w, h. They are just for easy calculations, use the functions to move the character (character.move)
     tab.velx = 0
     tab.vely = 0
+    tab.mx = 0
+    tab.my = 0
     tab.spd = 300
     tab.x = tab.vx[1]
     tab.y = tab.vy[1]
@@ -109,7 +111,7 @@ CharacterObj = function (obj, x, y, ...)
     
     --Spells
     tab.spells = {}
-    local keyTab = {"ml", "mr"} -- MouseLeft, MouseRight
+    local keyTab = {"ml", "mr", "kq"} -- MouseLeft, MouseRight
     local size = ((#keyTab<=#arg and #keyTab) or #arg)
     for i = 1, size do
         tab.spells[keyTab[i]] = Spell(arg[i])

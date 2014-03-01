@@ -2,6 +2,14 @@ require "physics"
 require "class"
 require "animation"
 require "scoi"
+require "debug"
+
+function love.keypressed(key, u)
+   --Debug
+   if key == "rctrl" then --set to whatever key you want to use
+      debug.debug()
+   end
+end
 
 function love.load()
     showmx, showmy = 0, 0
@@ -10,7 +18,7 @@ function love.load()
     stg = Stage()
     stg:loadStage('teste')
     local obja = Obj( 10, 0, 20, 10, 20, 40, 10, 50, 0, 40, 0, 10 )
-    stg.character[1] = CharacterObj(obja, 350, 250, 'sword', 'teleport')
+    stg.character[1] = CharacterObj(obja, 350, 250, 'sword', 'teleport', 'speed')
     stg.character[2] = Character(500, 500, 50, 50)
 end
 
@@ -22,6 +30,9 @@ function love.update(dt)
     
     readScoi(scoi, dt)
     
+    stg.character[1].mx = love.mouse.getX() - stg.x
+    stg.character[1].my = love.mouse.getY() - stg.y
+    
     ------------ LOGICA -------------
     
     --Movimento do Personagem
@@ -31,6 +42,7 @@ function love.update(dt)
         stg.character[i].onGround = onGround
         
         showmx, showmy = mx, my
+        
         
         -- Tests for collision with effects on the stage
         for j in pairs(stg.effects) do
@@ -48,9 +60,9 @@ function love.update(dt)
     end
 
     -- Mover os efeitos
-    for i in pairs(stg.effects) do
-        stg.effects[i]:update(dt)
-        if( stg.effects[i].lifeTime < 0 ) then
+    for i, v in pairs(stg.effects) do
+        v:update(dt)
+        if( v.lifeTime < 0 ) then
             stg.effects[i] = nil
         end
     end
