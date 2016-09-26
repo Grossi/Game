@@ -32,6 +32,12 @@ function love.update(dt)
     
     stg.character[1].mx = love.mouse.getX() - stg.x
     stg.character[1].my = love.mouse.getY() - stg.y
+
+    ---- Sair do jogo se aperta ESC, para ajudar a testar ----
+    
+    if ( love.keyboard.isDown("escape") ) then
+        love.event.quit()
+    end
     
     ------------ LOGICA -------------
     
@@ -69,7 +75,7 @@ function love.update(dt)
     
     -- Cicla pelos Buffs, deletando os que retornarem false
     for i, v in pairs(stg.character[1].buffs) do
-        if(v:run(dt) == false)then
+        if(v:run(stg.character[1], dt, stg) == false)then
             stg.character[1].buffs[i] = nil
         end
     end

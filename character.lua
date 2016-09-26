@@ -11,7 +11,7 @@ Character = function (x, y, w, h, ...)
     tab.h = h
     tab.velx = 0
     tab.vely = 0
-    tab.spd = 300 
+    tab.spd = 300
     tab.onGround = true
     tab.jump = function(self)
         if(self.onGround or true)then
@@ -44,7 +44,7 @@ Character = function (x, y, w, h, ...)
             self.vy[i] = self.vy[i] + my
         end
     end
-    
+
     --Spells
     tab.spells = {}
     local keyTab = {"ml", "mr", "kq"} -- MouseLeft, MouseRight, KeyQ
@@ -52,10 +52,10 @@ Character = function (x, y, w, h, ...)
     for i = 1, size do
         tab.spells[keyTab[i]] = Spell(arg[i])
     end
-    
+
     --Buffs
     tab.buffs = {}
-    
+
     return tab
 end
 
@@ -73,6 +73,7 @@ CharacterObj = function (obj, x, y, ...)
     tab.vely = 0
     tab.mx = 0
     tab.my = 0
+    tab.status = 'Normal'
     tab.spd = 300
     tab.x = tab.vx[1]
     tab.y = tab.vy[1]
@@ -97,6 +98,9 @@ CharacterObj = function (obj, x, y, ...)
         self.velx = self.velx * ( 1 - 5*dt )
     end
     tab.move = function(self, stage, mx, my)
+        if(self.status == 'Stun') then
+            return
+        end
         if(self == stage.character[1]) then
             stage.x = stage.x - mx
             stage.y = stage.y - my
@@ -108,7 +112,20 @@ CharacterObj = function (obj, x, y, ...)
             self.vy[i] = self.vy[i] + my
         end
     end
-    
+
+    tab.dislocate = function(self, stage, mx, my)
+        if(self == stage.character[1]) then
+            stage.x = stage.x - mx
+            stage.y = stage.y - my
+        end
+        self.x = self.x + mx
+        self.y = self.y + my
+        for i = 1, #self.vx do
+            self.vx[i] = self.vx[i] + mx
+            self.vy[i] = self.vy[i] + my
+        end
+    end
+
     --Spells
     tab.spells = {}
     local keyTab = {"ml", "mr", "kq"} -- MouseLeft, MouseRight
@@ -116,9 +133,9 @@ CharacterObj = function (obj, x, y, ...)
     for i = 1, size do
         tab.spells[keyTab[i]] = Spell(arg[i])
     end
-    
+
     --Buffs
     tab.buffs = {}
-    
+
     return tab
 end

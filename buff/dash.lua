@@ -1,30 +1,21 @@
-local timer = 5
-local start = true
-local x
-local y
-local dirx
-local diry
+local timer = 1.1
 local foo
-foo = function(self, dt)
-    if self.start == true then
-        x = self.character.x
-        y = self.character.x
-        dirx = self.character.mx
-        diry = self.character.my
-        self.start = false
+local args = {}
+foo = function(self, character, dt, stage)
+    if(self.timer == 1) then
+        self.args.status = character.status
+        character.status = 'Stun'
     end
-    if self.start == false and self.timer > 0 then
-        x = x + dirx
-        y = y + diry
-        self.character.x = x
-        self.character.y = y
-        self.timer = self.timer - dt
-        return true
+    character:dislocate(stage, character.spd*dt*5, 0)
+    if(self.timer < 0.0) then
+        character.status = self.args.status
+        return false
     end
-    return false
+    self.timer = self.timer - dt
+    return true
 end
 
-return timer, foo
+return foo, timer, args
 
 --False ---> Destroy the buff
 --True ---> Do nothing
